@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+
+    <!-- HTTPS redirect -->
+    <script>
+        if (location.protocol === 'http:') {
+            location.protocol = 'https:';
+        }
+    </script>
+
+    <!-- Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(reg => console.log('Service Worker registered', reg))
+                .catch(err => console.error('Service Worker not registered', err));
+        } else {
+            console.warn('Service Worker not supported in this browser');
+        }
+    </script>
+    <!-- PWA Install prompt handling -->
+    <script>
+        let deferredPrompt = null;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            const btn = document.getElementById('pwa-install-btn');
+            if (btn) btn.style.display = 'inline-block';
+        });
+
+        async function triggerInstall() {
+            if (!deferredPrompt) return;
+            const btn = document.getElementById('pwa-install-btn');
+            try {
+                const choiceResult = await deferredPrompt.prompt();
+                console.log('User choice:', choiceResult.outcome);
+            } catch (err) {
+                console.error('Install prompt failed', err);
+            } finally {
+                deferredPrompt = null;
+                if (btn) btn.style.display = 'none';
+            }
+        }
+
+        window.addEventListener('appinstalled', () => {
+            console.log('PWA installed');
+        });
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>mObywatel 2.0</title>
+
+    <link rel="manifest" href="manifest.json">
+    <link rel="shortcut icon" href="./mobywatellogo.svg" type="image/x-icon">
+    <meta name="theme-color" content="#fff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <link rel="stylesheet" href="./mObywatel 2.0_files/all.min.css">
+
+    <style>
+        @font-face { font-family: Roboto; font-weight: 100; src: url(/assets/roboto_light.ttf); }
+        @font-face { font-family: Roboto; font-weight: 300; src: url(/assets/roboto_regular.ttf); }
+        @font-face { font-family: Roboto; font-weight: 400; src: url(/assets/roboto_medium.ttf); }
+        @font-face { font-family: Roboto; font-style: italic; font-weight: 400; src: url(/assets/roboto_medium_italic.ttf); }
+        @font-face { font-family: Roboto; font-weight: 500; src: url(/assets/roboto_bold.ttf); }
+        @font-face { font-family: Roboto; font-weight: 700; src: url(/assets/roboto_black.ttf); }
+        @font-face { font-family: Roboto; font-weight: 900; src: url(/assets/roboto_medium_numbers.ttf); }
+
+        :root { --blue-active: #064792; }
+
+        * {
+            user-select: none;
+            -webkit-user-select: none;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            font-family: Roboto, sans-serif;
+            background: #f5f6fb;
+            color: #131419;
+        }
+
+        img { pointer-events: none; }
+
+        .Login_container_1 {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .Login_main_1 {
+            flex: 1 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .Login_logoTop {
+            position: absolute;
+            top: 20px;
+        }
+
+        .Login_changePassword_1 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #dbebfa;
+            border-radius: 50%;
+            width: 6em;
+            height: 6em;
+        }
+
+        .Login_changePasswordIcon {
+            width: 4em;
+            height: 4em;
+        }
+
+        .Login_bioLogin {
+            background-color: #dbebfa;
+            text-align: center;
+            margin: 10px 0;
+            border-radius: 10em;
+            padding: .2em 1em;
+        }
+
+        .tekst_biometeria {
+            color: #075094;
+            font-size: .8em;
+            font-weight: bold;
+        }
+
+        .Login_passwordSection {
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            padding: 15px;
+            border-radius: 15px;
+            max-width: 400px;
+            margin: 20px 0;
+        }
+
+        .Login_passwordLabel {
+            color: #696978;
+            font-size: .8em;
+            font-weight: 300;
+        }
+
+        .Login_passwordInput {
+            padding: 1em;
+            font-size: 1em;
+            border: 1px solid #56595b;
+            border-radius: .2em;
+            width: 100%;
+            margin-top: .5em;
+        }
+
+        .Login_forgotPassword {
+            color: #075094;
+            text-align: right;
+            font-size: .8em;
+        }
+
+        .Login_submitButton {
+            width: 100%;
+            padding: .6em;
+            background-color: #024a94;
+            color: #fff;
+            border: none;
+            border-radius: 5em;
+            cursor: pointer;
+            margin-top: 5em;
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        .Login_footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 400px;
+            margin-top: 20px;
+        }
+
+        .Login_footerImages {
+            display: flex;
+            gap: 10px;
+        }
+
+        .Login_versionText {
+            font-size: 12px;
+            color: #9c9da2;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="dynamic-panel">
+    <div class="Login_container_1">
+        <main class="Login_main_1">
+
+            <img src="./mObywatel 2.0_files/coi_common_ic_mobywatel_horizontal_logo_text.svg" class="Login_logoTop">
+
+            <div class="Login_changePassword_1">
+                <img src="./mObywatel 2.0_files/aa008_change_password_blue.svg" class="Login_changePasswordIcon">
+            </div>
+
+            <p style="font-weight: bold; font-size: 5vw; margin-top: 2em;">Wpisz hasło</p>
+
+            <div class="Login_bioLogin">
+                <p class="tekst_biometeria">Logowanie biometrią</p>
+            </div>
+
+            <button id="pwa-install-btn" onclick="triggerInstall()" style="display:none; padding:.6em 1em; background:#064792; color:#fff; border:none; border-radius:5em; font-weight:600;">
+                Zainstaluj aplikację
+            </button>
+
+            <div class="Login_passwordSection">
+                <p class="Login_passwordLabel">Hasło</p>
+
+                <div class="Login_passwordContainer">
+                    <input type="password" placeholder="Wpisz hasło" class="Login_passwordInput">
+                </div>
+
+                <p class="Login_forgotPassword">Nie pamiętam hasła</p>
+            </div>
+        </main>
+
+        <button class="Login_submitButton" onclick="window.location.href='dashboard.html';">
+            Zaloguj się
+        </button>
+
+        <footer class="Login_footer">
+            <div class="Login_footerImages">
+                <img src="./mObywatel 2.0_files/coi_common_ui_ic_coi_mobywatel_logo.svg" style="width: 5em;">
+                <img src="./mObywatel 2.0_files/coi_common_ui_ic_mc_mobywatel_logo.svg" style="width: 4em;">
+            </div>
+            <p class="Login_versionText">wersja 4.41.2 (8)</p>
+        </footer>
+    </div>
+</div>
+
+</body>
+</html>
